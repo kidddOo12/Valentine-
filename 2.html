@@ -55,14 +55,16 @@ h1 {
     box-shadow: 0 0 15px rgba(255,182,193,0.6);
 }
 
-/* Bouquet Flip Card */
+/* CENTER AREA */
 .bouquet-area {
-    margin: 40px auto;
-    width: 260px;
-    height: 260px;
+    margin: 30px auto;
+    width: 300px;
+    height: 300px;
     perspective: 1000px;
+    position: relative;
 }
 
+/* FLIP CARD */
 .flip-card {
     width: 100%;
     height: 100%;
@@ -86,6 +88,7 @@ h1 {
     position: relative;
 }
 
+/* BACK SIDE IMAGE */
 .card-back {
     transform: rotateY(180deg);
     display: flex;
@@ -94,29 +97,22 @@ h1 {
 }
 
 .card-back img {
-    width: 180px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     animation: glow 2s infinite alternate;
 }
 
 @keyframes glow {
     from { filter: drop-shadow(0 0 10px pink); }
-    to { filter: drop-shadow(0 0 25px hotpink); }
+    to { filter: drop-shadow(0 0 30px hotpink); }
 }
 
 .piece {
     position: absolute;
-    font-size: 26px;
+    font-size: 28px;
     transition: all 0.8s cubic-bezier(.22,1.2,.36,1);
     opacity: 0;
-}
-
-.message, .name-glow {
-    opacity: 0;
-    transition: opacity 2s ease;
-}
-
-.show {
-    opacity: 1;
 }
 
 .name-glow {
@@ -124,7 +120,19 @@ h1 {
     font-size: 34px;
     color: #ffc0cb;
     margin-top: 10px;
+    opacity: 0;
+    transition: opacity 2s ease;
 }
+
+.message {
+    font-family: 'Great Vibes', cursive;
+    font-size: 24px;
+    padding: 0 25px;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+.show { opacity: 1; }
 
 .music-btn {
     position: fixed;
@@ -164,8 +172,8 @@ canvas {
     <div class="flip-card" id="flipCard">
         <div class="card-face card-front" id="bouquetFront"></div>
         <div class="card-face card-back">
-            <!-- ❤️ REPLACE heart.png with your image file -->
-            <img src="IMG-20260202-WA0000.jpg" alt="Heart for Karishma">
+            <!-- Put your heart image file in same folder and name it heart.png -->
+            <img src="heart.png" alt="Heart for Karishma">
         </div>
     </div>
 </div>
@@ -189,9 +197,9 @@ const herName = document.getElementById("herName");
 let count = 0;
 
 const layout = [
-    {x:110,y:30},{x:80,y:70},{x:140,y:70},
-    {x:60,y:110},{x:110,y:110},{x:160,y:110},
-    {x:90,y:150},{x:130,y:150},{x:110,y:190}
+    {x:120,y:30},{x:80,y:70},{x:160,y:70},
+    {x:60,y:120},{x:120,y:110},{x:180,y:120},
+    {x:90,y:170},{x:150,y:170},{x:120,y:210}
 ];
 
 function addPiece(emoji) {
@@ -224,7 +232,7 @@ function toggleMusic() {
     music.paused ? music.play() : music.pause();
 }
 
-/* Falling Roses Background */
+/* Falling Roses */
 const canvas = document.getElementById("roseCanvas");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
