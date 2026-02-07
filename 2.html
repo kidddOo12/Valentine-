@@ -47,36 +47,52 @@ h1 {
     box-shadow: 0 0 15px rgba(255,182,193,0.6);
 }
 
-/* Bouquet Build Area */
-.bouquet-area {
+/* CENTER STAGE */
+.stage {
     position: relative;
     margin: 30px auto;
     width: 260px;
     height: 300px;
 }
 
+/* Bouquet pieces */
 .piece {
     position: absolute;
-    font-size: 28px;
+    font-size: 30px;
     transition: all 0.8s cubic-bezier(.22,1.2,.36,1);
     opacity: 0;
 }
 
-/* ❤️ Heart Image Area (below buttons) */
-.heart-reveal {
-    margin-top: 10px;
+/* Heart emoji stage */
+.final-heart {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 80px;
+    font-size: 90px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.8s ease;
+}
+
+/* Final heart image */
+.heart-image {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
     opacity: 0;
     transition: opacity 1.5s ease;
 }
 
-.heart-reveal img {
-    width: 180px;
+.heart-image img {
+    width: 100%;
     animation: glow 2s infinite alternate;
 }
 
 @keyframes glow {
-    from { filter: drop-shadow(0 0 8px pink); }
-    to { filter: drop-shadow(0 0 22px hotpink); }
+    from { filter: drop-shadow(0 0 10px pink); }
+    to { filter: drop-shadow(0 0 30px hotpink); }
 }
 
 .name-glow {
@@ -132,13 +148,14 @@ canvas {
     <button class="piece-btn" onclick="addPiece('💖')">💖</button>
 </div>
 
-<!-- ❤️ HEART APPEARS HERE -->
-<div class="heart-reveal" id="heartReveal">
-    <img src="heart.png" alt="Heart for Karishma">
+<!-- 🌹 STAGE -->
+<div class="stage">
+    <div id="bouquet"></div>
+    <div class="final-heart" id="finalHeart">💖</div>
+    <div class="heart-image" id="heartImage">
+        <img src="heart.png" alt="Heart for Karishma">
+    </div>
 </div>
-
-<!-- Bouquet Build Area -->
-<div class="bouquet-area" id="bouquet"></div>
 
 <div class="name-glow" id="herName">Karishma 💖</div>
 
@@ -153,7 +170,8 @@ canvas {
 
 <script>
 const bouquet = document.getElementById("bouquet");
-const heartReveal = document.getElementById("heartReveal");
+const finalHeart = document.getElementById("finalHeart");
+const heartImage = document.getElementById("heartImage");
 const message = document.getElementById("finalMessage");
 const herName = document.getElementById("herName");
 let count = 0;
@@ -181,12 +199,21 @@ function addPiece(emoji) {
     count++;
 
     if (count === layout.length) {
-        setTimeout(() => {
-            heartReveal.classList.add("show");   // ❤️ show heart below buttons
-            message.classList.add("show");
-            herName.classList.add("show");
-        }, 1000);
+        setTimeout(showHeartStage, 1000);
     }
+}
+
+function showHeartStage() {
+    bouquet.style.opacity = "0";
+    finalHeart.style.opacity = "1";
+    finalHeart.style.transform = "scale(1)";
+
+    setTimeout(() => {
+        finalHeart.style.opacity = "0";
+        heartImage.style.opacity = "1";
+        message.classList.add("show");
+        herName.classList.add("show");
+    }, 1200);
 }
 
 function toggleMusic() {
