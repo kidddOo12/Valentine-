@@ -1,53 +1,253 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Level 1 ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
 <style>
-body {background:#1a0610;color:white;text-align:center;font-family:sans-serif;}
-h1{margin-top:20px;}
-.grid{display:grid;grid-template-columns:repeat(4,70px);gap:10px;justify-content:center;margin-top:30px;}
+body{
+  margin:0;
+  background:radial-gradient(circle at center,#2a0a16,#12040c);
+  color:white;
+  text-align:center;
+  font-family:'Poppins',sans-serif;
+  overflow:hidden;
+}
+
+h1{
+  margin-top:20px;
+  font-family:'Playfair Display',serif;
+}
+
+p{
+  font-size:14px;
+  opacity:0.8;
+}
+
+/* Card Grid */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,70px);
+  gap:14px;
+  justify-content:center;
+  margin-top:30px;
+}
+
 .card{
-  width:70px;height:70px;background:#ff85a2;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;font-size:30px;
+  width:70px;
+  height:70px;
+  perspective:600px;
+}
+
+.inner{
+  width:100%;
+  height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.5s;
+}
+
+.flipped .inner{
+  transform:rotateY(180deg);
+}
+
+.front, .back{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  backface-visibility:hidden;
+}
+
+.front{
+  background:linear-gradient(45deg,#ff4d6d,#ff85a2);
+}
+
+.back{
+  background:#330d1a;
+  transform:rotateY(180deg);
+}
+
+/* Compliment popup */
+.compliment{
+  position:fixed;
+  bottom:20%;
+  left:50%;
+  transform:translateX(-50%);
+  background:#ff4d6d;
+  padding:10px 18px;
+  border-radius:20px;
+  font-size:14px;
+  opacity:0;
+  animation:fadeUp 2s ease forwards;
+}
+
+@keyframes fadeUp{
+  0%{opacity:0; transform:translate(-50%,20px);}
+  20%{opacity:1;}
+  80%{opacity:1;}
+  100%{opacity:0; transform:translate(-50%,-20px);}
+}
+
+/* Win Reward Screen */
+.win{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.9);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 1s ease;
+}
+
+.win.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.win h2{
+  font-family:'Playfair Display',serif;
+  margin-bottom:10px;
+  font-size:26px;
+}
+
+.win p{
+  max-width:260px;
+  margin-bottom:20px;
+}
+
+.win button{
+  padding:12px 22px;
+  border:none;
+  border-radius:30px;
+  font-size:18px;
+  background:#ff4d6d;
+  color:white;
   cursor:pointer;
 }
-.hidden{background:#ff4d6d;}
+
+/* Floating reward hearts */
+.reward-heart{
+  position:absolute;
+  font-size:22px;
+  animation:floatUp 2s ease forwards;
+}
+
+@keyframes floatUp{
+  0%{opacity:1; transform:translateY(0) scale(1);}
+  100%{opacity:0; transform:translateY(-120px) scale(0.5);}
+}
 </style>
 </head>
 <body>
-<h1>Level 1: Match the Hearts 💖</h1>
+
+<h1>Level 1: Match the Love 💖</h1>
+<p>Find all the matching pairs to unlock my heart 💘</p>
+
 <div class="grid" id="grid"></div>
 
+<div class="win" id="winScreen">
+  <h2>💝 You unlocked my heart, Karishma!</h2>
+  <p>Every match brought us closer together… you’re doing amazing ❤️</p>
+  <button onclick="goNext()">Continue 💘</button>
+</div>
+
 <script>
+const compliments = [
+  "Karishma, you’re my perfect match 💑",
+  "So cute, just like you Karishma 💕",
+  "Karishma, you make my heart smile 😊",
+  "Made for each other, Karishma 💖"
+];
+
 const emojis=["💖","🌹","💍","💘","💖","🌹","💍","💘"];
 emojis.sort(()=>Math.random()-0.5);
+
 let first=null,second=null,lock=false,matched=0;
 const grid=document.getElementById("grid");
+const winScreen=document.getElementById("winScreen");
 
 emojis.forEach(e=>{
   const card=document.createElement("div");
-  card.className="card hidden";
-  card.dataset.val=e;
+  card.className="card";
+  card.innerHTML=`
+    <div class="inner">
+      <div class="front">💗</div>
+      <div class="back">${e}</div>
+    </div>
+  `;
+
   card.onclick=()=>{
-    if(lock||!card.classList.contains("hidden"))return;
-    card.textContent=e;
-    card.classList.remove("hidden");
+    if(lock || card.classList.contains("flipped")) return;
+    card.classList.add("flipped");
+
     if(!first) first=card;
     else{
-      second=card; lock=true;
+      second=card;
+      lock=true;
+
       setTimeout(()=>{
-        if(first.dataset.val!==second.dataset.val){
-          first.textContent="";second.textContent="";
-          first.classList.add("hidden");second.classList.add("hidden");
-        }else matched++;
-        first=second=null; lock=false;
-        if(matched===4) window.location="catch.html";
+        const val1=first.querySelector(".back").textContent;
+        const val2=second.querySelector(".back").textContent;
+
+        if(val1!==val2){
+          first.classList.remove("flipped");
+          second.classList.remove("flipped");
+        } else {
+          matched++;
+          showCompliment();
+          createRewardHearts();
+        }
+
+        first=second=null;
+        lock=false;
+
+        if(matched===4) showWin();
       },700);
     }
   };
+
   grid.appendChild(card);
 });
+
+function showCompliment(){
+  const msg=document.createElement("div");
+  msg.className="compliment";
+  msg.textContent=compliments[Math.floor(Math.random()*compliments.length)];
+  document.body.appendChild(msg);
+  setTimeout(()=>msg.remove(),2000);
+}
+
+function showWin(){
+  winScreen.classList.add("show");
+  createRewardHearts(25);
+}
+
+function goNext(){
+  window.location="catch.html";
+}
+
+function createRewardHearts(amount=8){
+  for(let i=0;i<amount;i++){
+    const h=document.createElement("div");
+    h.className="reward-heart";
+    h.innerHTML="💖";
+    h.style.left=Math.random()*100+"vw";
+    h.style.top=Math.random()*100+"vh";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),2000);
+  }
+}
 </script>
+
 </body>
 </html>
