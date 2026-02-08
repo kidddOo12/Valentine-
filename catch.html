@@ -21,6 +21,18 @@ h1{margin-top:20px;}
   cursor:pointer;
 }
 
+/* Explosion particles */
+.particle {
+  position: absolute;
+  font-size: 18px;
+  pointer-events: none;
+  animation: explode 700ms ease-out forwards;
+}
+@keyframes explode {
+  0% {opacity:1; transform:translate(0,0) scale(1);}
+  100% {opacity:0; transform:translate(var(--x), var(--y)) scale(0.3);}
+}
+
 /* Reward screen */
 .reward{
   position:fixed;
@@ -61,7 +73,7 @@ h1{margin-top:20px;}
   cursor:pointer;
 }
 
-/* Floating burst hearts */
+/* Celebration burst */
 .burst{
   position:absolute;
   font-size:24px;
@@ -104,18 +116,44 @@ function spawn(){
   },30);
 
   h.onclick=()=>{
+    createExplosion(h);
     count++;
     scoreEl.textContent="Hearts: "+count+" / 10";
     h.remove();
-
     if(count>=10) showReward();
+  }
+}
+
+function createExplosion(el){
+  const rect = el.getBoundingClientRect();
+  const centerX = rect.left + rect.width/2;
+  const centerY = rect.top + rect.height/2;
+
+  for(let i=0;i<8;i++){
+    const p = document.createElement("div");
+    p.className = "particle";
+    p.textContent = "💖";
+
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = Math.random() * 40 + 20;
+
+    const x = Math.cos(angle) * distance + "px";
+    const y = Math.sin(angle) * distance + "px";
+
+    p.style.left = centerX + "px";
+    p.style.top = centerY + "px";
+    p.style.setProperty("--x", x);
+    p.style.setProperty("--y", y);
+
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),700);
   }
 }
 
 function showReward(){
   reward.classList.add("show");
 
-  // Celebration burst
+  // Celebration burst hearts
   for(let i=0;i<20;i++){
     const b=document.createElement("div");
     b.className="burst";
@@ -133,5 +171,6 @@ function goNext(){
 
 setInterval(spawn,900);
 </script>
+
 </body>
 </html>
