@@ -14,7 +14,6 @@ body{
   background:radial-gradient(circle at top,#3b1d0f,#1a0c06 80%);
   color:white;
   text-align:center;
-  overflow:hidden;
 }
 
 h1{
@@ -28,13 +27,33 @@ p.subtitle{
   opacity:0.8;
 }
 
+/* Puzzle Image Area */
+.puzzle-container{
+  margin:20px auto;
+  width:270px;
+  height:270px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);
+  gap:2px;
+  background:#000;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.piece{
+  background-size:270px 270px;
+  opacity:0;
+  transition:opacity 0.5s ease;
+}
+
 /* Chocolate Grid */
 .box{
   display:grid;
   grid-template-columns:repeat(3,80px);
   gap:15px;
   justify-content:center;
-  margin-top:30px;
+  margin-top:20px;
 }
 
 .choco{
@@ -77,46 +96,15 @@ p.subtitle{
   100%{opacity:0; transform:translate(-50%,-20px);}
 }
 
-/* Final Surprise */
+/* Final Message */
 .final{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.9);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
+  margin-top:20px;
+  font-size:18px;
   opacity:0;
-  pointer-events:none;
   transition:opacity 1s ease;
 }
+.final.show{opacity:1;}
 
-.final.show{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.final h2{
-  font-family:'Playfair Display',serif;
-  margin-bottom:10px;
-}
-
-.final p{
-  max-width:260px;
-  margin-bottom:20px;
-}
-
-.final button{
-  padding:12px 22px;
-  border:none;
-  border-radius:30px;
-  font-size:18px;
-  background:#ff4d6d;
-  color:white;
-  cursor:pointer;
-}
-
-/* Floating chocolate hearts */
 .float{
   position:absolute;
   font-size:22px;
@@ -132,17 +120,22 @@ p.subtitle{
 <body>
 
 <h1>Happy Chocolate Day, Karishma 🍫💖</h1>
-<p class="subtitle">Tap the chocolates to unwrap little sweet messages…</p>
+<p class="subtitle">Unwrap the chocolates to reveal a sweet surprise…</p>
 
+<!-- Puzzle Image -->
+<div class="puzzle-container" id="puzzle"></div>
+
+<!-- Chocolates -->
 <div class="box" id="box"></div>
 
-<div class="final" id="finalScreen">
-  <h2>🍫 The Sweetest Surprise</h2>
-  <p>Just like these chocolates… you make my life sweeter every day, Karishma 💖</p>
-  <button onclick="restart()">Open Again 💝</button>
+<div class="final" id="finalMsg">
+  Just like this picture came together…  
+  my world feels complete with you, Karishma 💖🍫
 </div>
 
 <script>
+const imageURL = "your-image.jpg"; // 🔥 PUT YOUR PHOTO FILE NAME HERE
+
 const messages=[
  "Life is sweeter with you, Karishma 🍫",
  "You are my favorite treat 💖",
@@ -151,16 +144,34 @@ const messages=[
  "Sweet like chocolate, sweeter like you 💝",
  "My love for you is endless, Karishma ❤️",
  "You make my world taste better 🌍🍫",
- "One bite of happiness = You 😍"
+ "One bite of happiness = You 😍",
+ "The sweetest surprise is YOU 💘"
 ];
 
+const puzzle=document.getElementById("puzzle");
 const box=document.getElementById("box");
-const finalScreen=document.getElementById("finalScreen");
+const finalMsg=document.getElementById("finalMsg");
+
 let opened=0;
 
+// Create 9 puzzle pieces
+for(let i=0;i<9;i++){
+  const piece=document.createElement("div");
+  piece.className="piece";
+  piece.style.backgroundImage=`url(${imageURL})`;
+
+  const x = (i%3)*-90;
+  const y = Math.floor(i/3)*-90;
+  piece.style.backgroundPosition=`${x}px ${y}px`;
+
+  puzzle.appendChild(piece);
+}
+
+// Shuffle messages
 messages.sort(()=>Math.random()-0.5);
 
-messages.forEach(msg=>{
+// Create chocolates
+messages.forEach((msg,i)=>{
   const c=document.createElement("div");
   c.className="choco";
   c.textContent="🍫";
@@ -170,12 +181,17 @@ messages.forEach(msg=>{
     c.classList.add("open");
     showMessage(msg);
     floatHearts();
+    revealPiece(i);
     opened++;
-    if(opened===messages.length) showFinal();
+    if(opened===9) finalMsg.classList.add("show");
   };
 
   box.appendChild(c);
 });
+
+function revealPiece(i){
+  document.querySelectorAll(".piece")[i].style.opacity=1;
+}
 
 function showMessage(text){
   const m=document.createElement("div");
@@ -195,14 +211,6 @@ function floatHearts(){
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),2000);
   }
-}
-
-function showFinal(){
-  finalScreen.classList.add("show");
-}
-
-function restart(){
-  location.reload();
 }
 </script>
 
