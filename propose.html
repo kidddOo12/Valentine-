@@ -1,38 +1,179 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Final Surprise 💍</title>
+<title>For Karishma 💍</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
 <style>
-body{margin:0;background:radial-gradient(#2a0a16,#12040c);color:white;text-align:center;font-family:sans-serif;}
-.container{margin-top:25vh;padding:20px;}
-button{padding:12px 22px;border-radius:30px;border:none;font-size:18px;}
-.yes{background:#ff4d6d;color:white;}
-.no{background:#444;color:white;position:absolute;}
-#ring{font-size:80px;opacity:0;transition:all 1s;}
-#msg{opacity:0;transition:opacity 2s;font-size:20px;margin-top:20px;}
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at center, #2a0a16, #12040c 70%);
+    color: white;
+    text-align: center;
+    overflow: hidden;
+}
+
+.container {
+    position: relative;
+    top: 18vh;
+    padding: 20px;
+    z-index: 2;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+}
+
+.question {
+    font-size: 22px;
+    margin: 20px 0 30px;
+}
+
+button {
+    padding: 12px 26px;
+    font-size: 18px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.yes-btn {
+    background: linear-gradient(45deg, #ff4d6d, #ff85a2);
+    color: white;
+    box-shadow: 0 0 15px rgba(255,105,180,0.6);
+}
+
+.no-btn {
+    background: #333;
+    color: white;
+    position: absolute;
+}
+
+.ring {
+    font-size: 90px;
+    margin-top: 30px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 1s ease;
+}
+
+.love-msg {
+    margin-top: 20px;
+    font-size: 20px;
+    font-family: 'Playfair Display', serif;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* Sparkle animation */
+.sparkle {
+    position: absolute;
+    font-size: 24px;
+    animation: sparkle 1.2s ease forwards;
+}
+
+@keyframes sparkle {
+    0% {opacity:1; transform:translateY(0) scale(1);}
+    100% {opacity:0; transform:translateY(-40px) scale(0.5);}
+}
 </style>
 </head>
+
 <body>
+
+<canvas id="bgHearts"></canvas>
+
 <div class="container">
-<h1>Karishma 💖</h1>
-<h2>Will you be mine forever?</h2>
-<button class="yes" onclick="yes()">Yes 💘</button>
-<button class="no" id="no">No 🙈</button>
-<div id="ring">💍</div>
-<div id="msg">You just made me the happiest person alive ❤️</div>
+    <h1>Karishma 💖</h1>
+    <div class="question">Will you be mine forever?</div>
+
+    <button class="yes-btn" onclick="sayYes()">Yes 💘</button>
+    <button class="no-btn" id="noBtn">No 🙈</button>
+
+    <div class="ring" id="ring">💍</div>
+    <div class="love-msg" id="loveMsg">
+        You just made me the happiest person alive ❤️<br>
+        I promise to love you forever.
+    </div>
 </div>
 
+<audio id="bgMusic" loop>
+    <source src="romantic-music.mp3" type="audio/mpeg">
+</audio>
+
 <script>
-const no=document.getElementById("no");
-no.onmouseover=no.ontouchstart=()=>{
-  no.style.left=Math.random()*70+"vw";
-  no.style.top=Math.random()*70+"vh";
+const noBtn = document.getElementById("noBtn");
+const ring = document.getElementById("ring");
+const loveMsg = document.getElementById("loveMsg");
+const music = document.getElementById("bgMusic");
+
+// Move NO button
+function moveNo() {
+    const x = Math.random() * (window.innerWidth - 120);
+    const y = Math.random() * (window.innerHeight - 200);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
 }
-function yes(){
-  document.getElementById("ring").style.opacity=1;
-  document.getElementById("msg").style.opacity=1;
+noBtn.addEventListener("touchstart", moveNo);
+noBtn.addEventListener("mouseover", moveNo);
+
+// YES button magic
+function sayYes() {
+    ring.style.opacity = "1";
+    ring.style.transform = "scale(1)";
+    loveMsg.style.opacity = "1";
+    music.play();
+
+    // Sparkles
+    for(let i=0;i<12;i++){
+        const s=document.createElement("div");
+        s.className="sparkle";
+        s.innerHTML="✨";
+        s.style.left=(window.innerWidth/2 + Math.random()*100-50)+"px";
+        s.style.top=(window.innerHeight/2 + Math.random()*50)+"px";
+        document.body.appendChild(s);
+        setTimeout(()=>s.remove(),1200);
+    }
 }
+
+/* Floating Hearts Background */
+const canvas = document.getElementById("bgHearts");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let hearts = Array.from({length:35}, () => ({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    speed: Math.random()*1+0.5
+}));
+
+function drawHearts(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.globalAlpha = 0.4;
+    ctx.font = "22px serif";
+    hearts.forEach(h=>{
+        ctx.fillText("💖",h.x,h.y);
+        h.y+=h.speed;
+        if(h.y>canvas.height){h.y=-20;h.x=Math.random()*canvas.width;}
+    });
+    requestAnimationFrame(drawHearts);
+}
+drawHearts();
 </script>
+
 </body>
 </html>
