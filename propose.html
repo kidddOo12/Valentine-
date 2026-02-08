@@ -11,83 +11,76 @@
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle at center, #2a0a16, #12040c 70%);
+    background: radial-gradient(circle at top, #2a0a16, #12040c 80%);
     color: white;
     text-align: center;
     overflow: hidden;
 }
 
-.container {
-    position: relative;
-    top: 18vh;
-    padding: 20px;
-    z-index: 2;
-}
-
 h1 {
+    margin-top: 15vh;
     font-family: 'Playfair Display', serif;
-    font-size: 34px;
+    font-size: 36px;
 }
 
-.question {
-    font-size: 22px;
-    margin: 20px 0 30px;
+.buttons {
+    margin-top: 30px;
+    position: relative;
 }
 
 button {
-    padding: 12px 26px;
+    padding: 12px 24px;
     font-size: 18px;
     border-radius: 30px;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
 }
 
 .yes-btn {
     background: linear-gradient(45deg, #ff4d6d, #ff85a2);
     color: white;
-    box-shadow: 0 0 15px rgba(255,105,180,0.6);
 }
 
 .no-btn {
-    background: #333;
+    background: #444;
     color: white;
     position: absolute;
 }
 
-.ring {
-    font-size: 90px;
-    margin-top: 30px;
-    opacity: 0;
-    transform: scale(0.5);
-    transition: all 1s ease;
-}
-
-.love-msg {
-    margin-top: 20px;
-    font-size: 20px;
-    font-family: 'Playfair Display', serif;
-    opacity: 0;
-    transition: opacity 2s ease;
-}
-
-canvas {
+/* Floating hearts */
+#bgHearts {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 0;
+    z-index: -1;
 }
 
-/* Sparkle animation */
-.sparkle {
+/* Confetti */
+.confetti {
     position: absolute;
-    font-size: 24px;
-    animation: sparkle 1.2s ease forwards;
+    width: 8px;
+    height: 8px;
+    background:hsl(var(--hue),80%,65%);
+    animation:confettiFall 2s linear forwards;
 }
 
-@keyframes sparkle {
-    0% {opacity:1; transform:translateY(0) scale(1);}
-    100% {opacity:0; transform:translateY(-40px) scale(0.5);}
+@keyframes confettiFall {
+    100% {transform: translateY(100vh) rotate(720deg); opacity: 0;}
+}
+
+#ringPopup {
+    font-size: 0;
+    margin-top: 40px;
+    opacity: 0;
+    transition: all 1s ease;
+}
+
+#proposalMsg {
+    margin-top: 20px;
+    font-size: 22px;
+    opacity: 0;
+    transition: opacity 1.5s ease;
 }
 </style>
 </head>
@@ -96,18 +89,16 @@ canvas {
 
 <canvas id="bgHearts"></canvas>
 
-<div class="container">
-    <h1>Karishma 💖</h1>
-    <div class="question">Will you be mine forever?</div>
-
+<h1>Karishma 💖</h1>
+<div class="buttons">
     <button class="yes-btn" onclick="sayYes()">Yes 💘</button>
     <button class="no-btn" id="noBtn">No 🙈</button>
+</div>
 
-    <div class="ring" id="ring">💍</div>
-    <div class="love-msg" id="loveMsg">
-        You just made me the happiest person alive ❤️<br>
-        I promise to love you forever.
-    </div>
+<div id="ringPopup">💍</div>
+<div id="proposalMsg">
+    You just made me the happiest person alive ❤️<br>
+    I promise to love you forever.
 </div>
 
 <audio id="bgMusic" loop>
@@ -115,37 +106,78 @@ canvas {
 </audio>
 
 <script>
-const noBtn = document.getElementById("noBtn");
-const ring = document.getElementById("ring");
-const loveMsg = document.getElementById("loveMsg");
 const music = document.getElementById("bgMusic");
 
-// Move NO button
+// NO button runs away
+const noBtn = document.getElementById("noBtn");
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
+
 function moveNo() {
     const x = Math.random() * (window.innerWidth - 120);
-    const y = Math.random() * (window.innerHeight - 200);
+    const y = Math.random() * (window.innerHeight - 120);
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
 }
-noBtn.addEventListener("touchstart", moveNo);
-noBtn.addEventListener("mouseover", moveNo);
 
-// YES button magic
+// YES celebration
 function sayYes() {
-    ring.style.opacity = "1";
-    ring.style.transform = "scale(1)";
-    loveMsg.style.opacity = "1";
+    startMusicFadeIn();
+    showConfetti();
+
+    const ring = document.getElementById("ringPopup");
+    const msg = document.getElementById("proposalMsg");
+
+    ring.style.fontSize = "90px";
+    ring.style.opacity = 1;
+
+    setTimeout(() => { msg.style.opacity = 1; }, 1200);
+}
+
+// 🎵 Fade IN
+function startMusicFadeIn() {
+    music.volume = 0;
     music.play();
 
-    // Sparkles
-    for(let i=0;i<12;i++){
-        const s=document.createElement("div");
-        s.className="sparkle";
-        s.innerHTML="✨";
-        s.style.left=(window.innerWidth/2 + Math.random()*100-50)+"px";
-        s.style.top=(window.innerHeight/2 + Math.random()*50)+"px";
-        document.body.appendChild(s);
-        setTimeout(()=>s.remove(),1200);
+    let vol = 0;
+    const fade = setInterval(() => {
+        if (vol < 0.9) {
+            vol += 0.05;
+            music.volume = vol;
+        } else {
+            music.volume = 1;
+            clearInterval(fade);
+        }
+    }, 200);
+}
+
+// 🎵 Fade OUT when leaving page
+function fadeOutMusic() {
+    let vol = music.volume;
+    const fade = setInterval(() => {
+        if (vol > 0.05) {
+            vol -= 0.05;
+            music.volume = vol;
+        } else {
+            music.volume = 0;
+            music.pause();
+            clearInterval(fade);
+        }
+    }, 200);
+}
+
+// Trigger fade out on page leave or refresh
+window.addEventListener("beforeunload", fadeOutMusic);
+
+// Confetti burst
+function showConfetti() {
+    for (let i = 0; i < 60; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random()*100+"vw";
+        c.style.setProperty("--hue", Math.random()*360);
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 2000);
     }
 }
 
@@ -165,10 +197,13 @@ function drawHearts(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.globalAlpha = 0.4;
     ctx.font = "22px serif";
-    hearts.forEach(h=>{
-        ctx.fillText("💖",h.x,h.y);
-        h.y+=h.speed;
-        if(h.y>canvas.height){h.y=-20;h.x=Math.random()*canvas.width;}
+    hearts.forEach(h => {
+        ctx.fillText("💖", h.x, h.y);
+        h.y += h.speed;
+        if (h.y > canvas.height) {
+            h.y = -20;
+            h.x = Math.random()*canvas.width;
+        }
     });
     requestAnimationFrame(drawHearts);
 }
