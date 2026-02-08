@@ -1,43 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Level 2 💘</title>
-<style>
-body{
-  margin:0;
-  background:radial-gradient(circle,#2a0a16,#12040c);
-  color:white;
-  text-align:center;
-  overflow:hidden;
-  font-family:sans-serif;
-}
-h1{margin-top:20px;}
-#score{font-size:20px;margin-top:10px;}
 
-.heart{
-  position:absolute;
-  font-size:32px;
-  cursor:pointer;
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    background: radial-gradient(circle at top,#2a0a16,#12040c 80%);
+    color: white;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+}
+
+h1 {
+    margin-top: 15px;
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+}
+
+#score {
+    font-size: 20px;
+    margin: 8px;
+}
+
+.love-meter {
+    width: 80%;
+    height: 18px;
+    border: 2px solid #ff85a2;
+    margin: 10px auto;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.love-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg,#ff4d6d,#ff85a2);
+    transition: width 0.3s ease;
+}
+
+.heart {
+    position: absolute;
+    font-size: 32px;
+    cursor: pointer;
 }
 
 /* Explosion particles */
 .particle {
-  position: absolute;
-  font-size: 18px;
-  pointer-events: none;
-  animation: explode 700ms ease-out forwards;
+  position:absolute;
+  font-size:20px;
+  animation:explode 0.8s ease-out forwards;
 }
 @keyframes explode {
-  0% {opacity:1; transform:translate(0,0) scale(1);}
-  100% {opacity:0; transform:translate(var(--x), var(--y)) scale(0.3);}
+  to{opacity:0;transform:translate(var(--x),var(--y)) scale(0.3);}
 }
 
-/* Reward screen */
-.reward{
+/* Reward Screen */
+.reward-screen{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.85);
+  background:rgba(0,0,0,0.9);
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -46,88 +73,85 @@ h1{margin-top:20px;}
   pointer-events:none;
   transition:opacity 1s ease;
 }
-
-.reward.show{
+.reward-screen.show{
   opacity:1;
   pointer-events:auto;
 }
-
-.reward h2{
-  font-size:26px;
-  margin-bottom:15px;
+.reward-screen h2{
+  font-size:28px;
+  margin-bottom:8px;
 }
-
-.reward p{
+.reward-screen p{
   font-size:18px;
-  max-width:280px;
-  margin-bottom:20px;
+  margin-bottom:14px;
 }
-
-.reward button{
+.reward-screen button{
   padding:12px 22px;
   border:none;
   border-radius:30px;
-  font-size:18px;
   background:#ff4d6d;
   color:white;
+  font-size:18px;
   cursor:pointer;
-}
-
-/* Celebration burst */
-.burst{
-  position:absolute;
-  font-size:24px;
-  animation:burst 1.5s ease forwards;
-}
-@keyframes burst{
-  0%{opacity:1; transform:translateY(0) scale(1);}
-  100%{opacity:0; transform:translateY(-80px) scale(0.5);}
 }
 </style>
 </head>
+
 <body>
 
 <h1>Level 2: Catch the Love 💖</h1>
 <div id="score">Hearts: 0 / 10</div>
 
-<div class="reward" id="rewardScreen">
-  <h2>💝 You unlocked my heart!</h2>
-  <p>Every heart you caught brought you closer to this moment…</p>
+<div class="love-meter">
+  <div class="love-fill" id="loveFill"></div>
+</div>
+
+<!-- Reward -->
+<div class="reward-screen" id="rewardScreen">
+  <h2>💝 You filled the love meter!</h2>
+  <p>Close to the next big moment…</p>
   <button onclick="goNext()">Continue 💍</button>
 </div>
 
 <script>
-let count=0;
-const scoreEl=document.getElementById("score");
-const reward=document.getElementById("rewardScreen");
+let count = 0;
+const total = 10;
+const scoreEl = document.getElementById("score");
+const loveFill = document.getElementById("loveFill");
+const rewardScreen = document.getElementById("rewardScreen");
 
+// Spawn heart
 function spawn(){
-  const h=document.createElement("div");
-  h.className="heart";
-  h.textContent="💖";
-  h.style.left=Math.random()*90+"vw";
-  h.style.top="-30px";
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.textContent = "💖";
+  h.style.left = Math.random() * 90 + "vw";
+  h.style.top = "-30px";
   document.body.appendChild(h);
 
-  const fall=setInterval(()=>{
-    let y=parseInt(h.style.top);
-    h.style.top=(y+3)+"px";
-    if(y>window.innerHeight){h.remove();clearInterval(fall);}
-  },30);
+  const fall = setInterval(()=>{
+    let y = parseInt(h.style.top);
+    h.style.top = (y + 2) + "px";
+    if(y > window.innerHeight){
+      clearInterval(fall);
+      h.remove();
+    }
+  }, 30);
 
-  h.onclick=()=>{
+  h.onclick = () => {
     createExplosion(h);
     count++;
-    scoreEl.textContent="Hearts: "+count+" / 10";
     h.remove();
-    if(count>=10) showReward();
+    updateScore();
+    if(count >= total) showReward();
   }
 }
 
+// Explosion on tap
 function createExplosion(el){
   const rect = el.getBoundingClientRect();
-  const centerX = rect.left + rect.width/2;
-  const centerY = rect.top + rect.height/2;
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top + rect.height/2;
 
   for(let i=0;i<8;i++){
     const p = document.createElement("div");
@@ -135,38 +159,32 @@ function createExplosion(el){
     p.textContent = "💖";
 
     const angle = Math.random() * 2 * Math.PI;
-    const distance = Math.random() * 40 + 20;
+    const dist = Math.random() * 50 + 20;
+    const x = Math.cos(angle)*dist + "px";
+    const y = Math.sin(angle)*dist + "px";
 
-    const x = Math.cos(angle) * distance + "px";
-    const y = Math.sin(angle) * distance + "px";
-
-    p.style.left = centerX + "px";
-    p.style.top = centerY + "px";
-    p.style.setProperty("--x", x);
-    p.style.setProperty("--y", y);
+    p.style.left = cx + "px";
+    p.style.top = cy + "px";
+    p.style.setProperty("--x",x);
+    p.style.setProperty("--y",y);
 
     document.body.appendChild(p);
-    setTimeout(()=>p.remove(),700);
+    setTimeout(()=>p.remove(),800);
   }
+}
+
+function updateScore(){
+  scoreEl.textContent = "Hearts: " + count + " / " + total;
+  loveFill.style.width = ((count/total)*100) + "%";
 }
 
 function showReward(){
-  reward.classList.add("show");
-
-  // Celebration burst hearts
-  for(let i=0;i<20;i++){
-    const b=document.createElement("div");
-    b.className="burst";
-    b.innerHTML="💖";
-    b.style.left=Math.random()*100+"vw";
-    b.style.top=Math.random()*100+"vh";
-    document.body.appendChild(b);
-    setTimeout(()=>b.remove(),1500);
-  }
+  rewardScreen.classList.add("show");
 }
 
+// Go next
 function goNext(){
-  window.location="propose.html";
+  window.location = "propose.html";
 }
 
 setInterval(spawn,900);
