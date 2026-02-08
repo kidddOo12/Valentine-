@@ -4,20 +4,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Level 2 💘</title>
 <style>
-body{margin:0;background:#12040c;color:white;text-align:center;overflow:hidden;}
+body{
+  margin:0;
+  background:radial-gradient(circle,#2a0a16,#12040c);
+  color:white;
+  text-align:center;
+  overflow:hidden;
+  font-family:sans-serif;
+}
 h1{margin-top:20px;}
 #score{font-size:20px;margin-top:10px;}
+
 .heart{
-  position:absolute;font-size:30px;cursor:pointer;
+  position:absolute;
+  font-size:32px;
+  cursor:pointer;
+}
+
+/* Reward screen */
+.reward{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 1s ease;
+}
+
+.reward.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.reward h2{
+  font-size:26px;
+  margin-bottom:15px;
+}
+
+.reward p{
+  font-size:18px;
+  max-width:280px;
+  margin-bottom:20px;
+}
+
+.reward button{
+  padding:12px 22px;
+  border:none;
+  border-radius:30px;
+  font-size:18px;
+  background:#ff4d6d;
+  color:white;
+  cursor:pointer;
+}
+
+/* Floating burst hearts */
+.burst{
+  position:absolute;
+  font-size:24px;
+  animation:burst 1.5s ease forwards;
+}
+@keyframes burst{
+  0%{opacity:1; transform:translateY(0) scale(1);}
+  100%{opacity:0; transform:translateY(-80px) scale(0.5);}
 }
 </style>
 </head>
 <body>
+
 <h1>Level 2: Catch the Love 💖</h1>
 <div id="score">Hearts: 0 / 10</div>
 
+<div class="reward" id="rewardScreen">
+  <h2>💝 You unlocked my heart!</h2>
+  <p>Every heart you caught brought you closer to this moment…</p>
+  <button onclick="goNext()">Continue 💍</button>
+</div>
+
 <script>
 let count=0;
+const scoreEl=document.getElementById("score");
+const reward=document.getElementById("rewardScreen");
+
 function spawn(){
   const h=document.createElement("div");
   h.className="heart";
@@ -34,11 +105,32 @@ function spawn(){
 
   h.onclick=()=>{
     count++;
-    document.getElementById("score").textContent="Hearts: "+count+" / 10";
+    scoreEl.textContent="Hearts: "+count+" / 10";
     h.remove();
-    if(count>=10) window.location="propose.html";
+
+    if(count>=10) showReward();
   }
 }
+
+function showReward(){
+  reward.classList.add("show");
+
+  // Celebration burst
+  for(let i=0;i<20;i++){
+    const b=document.createElement("div");
+    b.className="burst";
+    b.innerHTML="💖";
+    b.style.left=Math.random()*100+"vw";
+    b.style.top=Math.random()*100+"vh";
+    document.body.appendChild(b);
+    setTimeout(()=>b.remove(),1500);
+  }
+}
+
+function goNext(){
+  window.location="propose.html";
+}
+
 setInterval(spawn,900);
 </script>
 </body>
