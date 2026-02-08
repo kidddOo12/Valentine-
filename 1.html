@@ -1,264 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>For Karishma 🌹</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Karishma 💍</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
 
 <style>
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle at 50% 30%, #3a0d1f 0%, #1a0610 40%, #0b0207 100%);
-    overflow-x: hidden;
+    background: radial-gradient(circle at center, #2a0a16, #12040c 70%);
     color: white;
     text-align: center;
-    position: relative;
+    overflow: hidden;
 }
 
-/* Cinematic dark edges */
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at center, transparent 55%, rgba(0,0,0,0.65) 100%);
-    pointer-events: none;
-    z-index: 0;
+.container {
+    position: relative;
+    top: 20vh;
+    padding: 20px;
 }
 
 h1 {
-    font-family: 'Great Vibes', cursive;
-    font-size: 44px;
-    margin-top: 20px;
-    color: #ffb6c1;
-    text-shadow: 0 0 12px rgba(255,182,193,0.6);
-}
-
-.instructions {
-    font-size: 15px;
-    opacity: 0.85;
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
     margin-bottom: 10px;
 }
 
-.builder {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 15px 0;
-}
-
-.piece-btn {
-    font-size: 30px;
-    padding: 10px 14px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255,255,255,0.18);
-    color: white;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 15px rgba(255,182,193,0.6);
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.piece-btn:active {
-    transform: scale(0.9);
-}
-
-.bouquet-area {
-    position: relative;
-    margin: 30px auto;
-    width: 260px;
-    height: 320px;
-}
-
-/* Soft romantic glow */
-.bouquet-area::before {
-    content: "";
-    position: absolute;
-    width: 220px;
-    height: 220px;
-    background: radial-gradient(circle, rgba(255,105,180,0.35), transparent 70%);
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    filter: blur(25px);
-    z-index: -1;
-}
-
-.piece {
-    position: absolute;
-    font-size: 26px;
-    transition: all 0.8s cubic-bezier(.22,1.2,.36,1);
+.question {
+    font-size: 22px;
+    margin: 30px 0;
     opacity: 0;
+    transition: opacity 2s ease;
 }
 
-.message {
+.buttons {
     margin-top: 20px;
-    font-size: 24px;
-    font-family: 'Great Vibes', cursive;
-    opacity: 0;
-    transition: opacity 1.5s ease;
-    padding: 0 25px;
-    text-shadow: 0 0 10px rgba(0,0,0,0.6);
+    position: relative;
+    height: 120px;
 }
 
-.show-message {
-    opacity: 1;
-}
-
-.music-btn {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    background: rgba(255,255,255,0.15);
+button {
+    padding: 12px 22px;
+    font-size: 18px;
+    border-radius: 30px;
     border: none;
-    padding: 10px 14px;
-    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.yes-btn {
+    background: linear-gradient(45deg, #ff4d6d, #ff85a2);
     color: white;
-    backdrop-filter: blur(6px);
+    box-shadow: 0 0 15px rgba(255,105,180,0.6);
+}
+
+.no-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    position: absolute;
+}
+
+.hidden { display: none; }
+
+.ring {
+    font-size: 80px;
+    margin-top: 30px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 1s ease;
+}
+
+.love-msg {
+    margin-top: 20px;
+    font-size: 20px;
+    font-family: 'Playfair Display', serif;
+    opacity: 0;
+    transition: opacity 2s ease;
 }
 
 canvas {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: -2;
-}
-
-.heart-glow {
-    animation: glow 2s infinite alternate;
-}
-
-@keyframes glow {
-    from { text-shadow: 0 0 10px pink; }
-    to { text-shadow: 0 0 30px hotpink; }
-}
-
-.name-glow {
-    font-size: 34px;
-    font-family: 'Great Vibes', cursive;
-    margin-top: 10px;
-    color: #ffc0cb;
-    text-shadow: 0 0 18px rgba(255,105,180,0.9);
-    opacity: 0;
-    transition: opacity 2s ease;
-}
-.show-name {
-    opacity: 1;
+    z-index: -1;
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="roseCanvas"></canvas>
+<canvas id="bgHearts"></canvas>
 
-<button class="music-btn" onclick="toggleMusic()">🎵 Music</button>
+<div class="container">
+    <h1>Hey Karishma 💖</h1>
+    <div class="question" id="question">Will you be mine forever?</div>
 
-<h1>Build Me a Rose Bouquet 🌹</h1>
-<div class="instructions">Tap the pieces to create something beautiful ❤️</div>
+    <div class="buttons">
+        <button class="yes-btn" onclick="sayYes()">Yes 💘</button>
+        <button class="no-btn" id="noBtn">Think again 🙈</button>
+    </div>
 
-<div class="builder">
-    <button class="piece-btn" onclick="addPiece('🌹')">🌹</button>
-    <button class="piece-btn" onclick="addPiece('🍃')">🍃</button>
-    <button class="piece-btn" onclick="addPiece('💖')">💖</button>
+    <div class="ring" id="ring">💍</div>
+    <div class="love-msg" id="loveMsg">
+        You just made me the happiest person alive ❤️<br>
+        I promise to love you today, tomorrow, and forever.
+    </div>
 </div>
-
-<div class="bouquet-area" id="bouquet"></div>
-
-<div class="name-glow" id="herName">Karishma 💖</div>
-
-<div class="message" id="finalMessage">
-    You built this bouquet… just like you built a place in my heart. 🌹  
-    Happy Rose Day, my beautiful Karishma ❤️
-</div>
-
-<audio id="bgMusic" loop>
-    <source src="romantic-music.mp3" type="audio/mpeg">
-</audio>
 
 <script>
-const bouquet = document.getElementById("bouquet");
-const message = document.getElementById("finalMessage");
-const herName = document.getElementById("herName");
-let count = 0;
+const question = document.getElementById("question");
+const noBtn = document.getElementById("noBtn");
+const ring = document.getElementById("ring");
+const loveMsg = document.getElementById("loveMsg");
 
-const layout = [
-    {x:110,y:40},{x:80,y:70},{x:140,y:70},
-    {x:60,y:110},{x:110,y:110},{x:160,y:110},
-    {x:90,y:150},{x:130,y:150},{x:110,y:190}
-];
+setTimeout(() => question.style.opacity = "1", 800);
 
-function addPiece(emoji) {
-    if (count >= layout.length) return;
+// Make NO button run away
+noBtn.addEventListener("touchstart", moveButton);
+noBtn.addEventListener("mouseover", moveButton);
 
-    const piece = document.createElement("div");
-    piece.className = "piece";
-    piece.innerText = emoji;
-
-    bouquet.appendChild(piece);
-
-    setTimeout(() => {
-        piece.style.left = layout[count].x + "px";
-        piece.style.top = layout[count].y + "px";
-        piece.style.opacity = 1;
-    }, 50);
-
-    count++;
-
-    if (count === layout.length) {
-        setTimeout(transformToHeart, 1200);
-    }
+function moveButton() {
+    const x = Math.random() * (window.innerWidth - 120);
+    const y = Math.random() * 200;
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
 }
 
-function transformToHeart() {
-    bouquet.innerHTML = "💖";
-    bouquet.style.fontSize = "90px";
-    bouquet.classList.add("heart-glow");
-    message.classList.add("show-message");
-    herName.classList.add("show-name");
+// YES button action
+function sayYes() {
+    ring.style.opacity = "1";
+    ring.style.transform = "scale(1)";
+    loveMsg.style.opacity = "1";
 }
 
-function toggleMusic() {
-    const music = document.getElementById("bgMusic");
-    if (music.paused) music.play();
-    else music.pause();
-}
-
-/* Soft Falling Roses */
-const canvas = document.getElementById("roseCanvas");
+/* Floating hearts background */
+const canvas = document.getElementById("bgHearts");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let roses = [];
-for (let i = 0; i < 25; i++) {
-    roses.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 20 + 10,
-        speed: Math.random() * 1 + 0.5
-    });
-}
+let hearts = Array.from({length:30}, () => ({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    speed: Math.random()*1+0.5
+}));
 
-function drawRoses() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.globalAlpha = 0.35;
+function drawHearts(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.globalAlpha = 0.4;
     ctx.font = "20px serif";
-    roses.forEach(r => {
-        ctx.fillText("🌹", r.x, r.y);
-        r.y += r.speed;
-        if (r.y > canvas.height) {
-            r.y = -20;
-            r.x = Math.random() * canvas.width;
-        }
+    hearts.forEach(h=>{
+        ctx.fillText("💖",h.x,h.y);
+        h.y+=h.speed;
+        if(h.y>canvas.height){h.y=-20;h.x=Math.random()*canvas.width;}
     });
-    requestAnimationFrame(drawRoses);
+    requestAnimationFrame(drawHearts);
 }
-
-drawRoses();
+drawHearts();
 </script>
 
 </body>
