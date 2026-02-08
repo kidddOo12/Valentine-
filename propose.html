@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Surprise 💍</title>
+<style>
+body{margin:0;background:radial-gradient(#2a0a16,#12040c);color:white;text-align:center;font-family:sans-serif;}
+.container{margin-top:25vh;padding:20px;}
+button{padding:12px 22px;border-radius:30px;border:none;font-size:18px;}
+.yes{background:#ff4d6d;color:white;}
+.no{background:#444;color:white;position:absolute;}
+#ring{font-size:80px;opacity:0;transition:all 1s;}
+#msg{opacity:0;transition:opacity 2s;font-size:20px;margin-top:20px;}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Karishma 💖</h1>
+<h2>Will you be mine forever?</h2>
+<button class="yes" onclick="yes()">Yes 💘</button>
+<button class="no" id="no">No 🙈</button>
+<div id="ring">💍</div>
+<div id="msg">You just made me the happiest person alive ❤️</div>
+</div>
+
+<script>
+const no=document.getElementById("no");
+no.onmouseover=no.ontouchstart=()=>{
+  no.style.left=Math.random()*70+"vw";
+  no.style.top=Math.random()*70+"vh";
+}
+function yes(){
+  document.getElementById("ring").style.opacity=1;
+  document.getElementById("msg").style.opacity=1;
+}
+</script>
+</body>
+</html>
