@@ -17,10 +17,19 @@ body{
   overflow-x:hidden;
 }
 
+/* 💓 Heartbeat */
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.02); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+.heartbeat { animation: heartbeat 0.6s ease; }
+
 h1{
   margin-top:20px;
   font-family:'Playfair Display',serif;
-  font-size:30px;
 }
 
 .subtitle{
@@ -28,144 +37,232 @@ h1{
   opacity:0.8;
 }
 
-/* Promise Cards */
+/* Cards */
 .container{
   display:grid;
-  grid-template-columns:repeat(2,140px);
+  grid-template-columns:repeat(2,150px);
   gap:18px;
   justify-content:center;
-  margin-top:30px;
+  margin-top:25px;
 }
 
 .card{
-  width:140px;
-  height:90px;
   background:linear-gradient(145deg,#ff4d6d,#ff85a2);
   border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
+  padding:18px;
   cursor:pointer;
   box-shadow:0 0 15px rgba(255,105,180,0.4);
-  transition:transform 0.4s ease, opacity 0.4s ease;
+  transition:transform 0.3s ease;
 }
 
-.card.open{
-  transform:scale(0.85);
-  opacity:0.4;
-}
+.card:hover{ transform:scale(1.05); }
 
-/* Popup message */
-.promise-msg{
+/* Popup Scroll */
+.popup{
   position:fixed;
-  bottom:20%;
-  left:50%;
-  transform:translateX(-50%);
-  background:#ff85a2;
-  padding:14px 20px;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.5s ease;
+}
+
+.popup.show{ opacity:1; pointer-events:auto; }
+
+.scroll{
+  background:#fff4e6;
+  color:#5a2d1a;
+  padding:20px;
+  border-radius:12px;
+  max-width:260px;
+  text-align:center;
+  font-size:15px;
+}
+
+.accept-btn{
+  margin-top:15px;
+  padding:8px 16px;
+  border:none;
   border-radius:20px;
-  font-size:16px;
+  background:#ff4d6d;
   color:white;
-  animation:fadeUp 2.2s ease forwards;
+  cursor:pointer;
 }
 
-@keyframes fadeUp{
-  0%{opacity:0; transform:translate(-50%,25px);}
-  20%{opacity:1;}
-  80%{opacity:1;}
-  100%{opacity:0; transform:translate(-50%,-25px);}
-}
-
-/* Floating hearts */
-.float{
+/* Seal + Sparkles */
+.seal{
   position:absolute;
-  font-size:22px;
-  animation:floatUp 2s ease forwards;
+  font-size:60px;
+  animation:stamp 0.6s ease forwards;
+}
+@keyframes stamp{
+  0%{transform:scale(2);opacity:0;}
+  50%{opacity:1;}
+  100%{transform:scale(1);opacity:1;}
 }
 
-@keyframes floatUp{
-  0%{opacity:1; transform:translateY(0);}
-  100%{opacity:0; transform:translateY(-120px);}
+.sparkle {
+  position:absolute;
+  font-size:14px;
+  animation:spark 0.8s ease forwards;
 }
+@keyframes spark {
+  to { transform:translateY(-40px); opacity:0; }
+}
+
+/* Progress */
+.progress{
+  width:80%;
+  height:16px;
+  border:2px solid #ff85a2;
+  margin:20px auto;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#ff4d6d,#ff85a2);
+  transition:width 0.4s ease;
+}
+
+.fill.full { box-shadow:0 0 15px #ff85a2; }
 
 /* Final Promise */
 .final{
-  margin-top:30px;
+  margin-top:25px;
   font-size:18px;
   opacity:0;
   transition:opacity 1s ease;
+  text-shadow:0 0 10px rgba(255,105,180,0.7);
 }
 
-.final.show{
-  opacity:1;
+.final.show{ opacity:1; }
+
+#foreverBtn{
+  display:none;
+  margin-top:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:25px;
+  background:#ff4d6d;
+  color:white;
+  cursor:pointer;
 }
 </style>
 </head>
 <body>
 
 <h1>Happy Promise Day, Karishma 🤞💖</h1>
-<p class="subtitle">Tap each promise to see what I promise you…</p>
+<p class="subtitle">Tap each promise and seal it with your acceptance…</p>
+
+<div class="progress"><div class="fill" id="fill"></div></div>
 
 <div class="container" id="container"></div>
 
 <div class="final" id="finalPromise">
-  My biggest promise…  
-  I will always choose you, support you, and love you — today, tomorrow, and forever ❤️
+  My forever promise… I will always choose you, stand by you, and love you endlessly ❤️
 </div>
+
+<button id="foreverBtn">Seal Our Forever 💖</button>
+
+<div class="popup" id="popup">
+  <div class="scroll">
+    <div id="promiseText"></div>
+    <button class="accept-btn" onclick="acceptPromise()">I Accept This Promise 💖</button>
+  </div>
+</div>
+
+<!-- 🎵 Optional music -->
+<audio id="bgMusic" loop autoplay>
+  <source src="promise-music.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 const promises=[
-  "I promise to always make you smile 😊",
-  "I promise to stand by you in every situation 🤝",
-  "I promise to listen when you need me 🎧",
-  "I promise to support your dreams 🌟",
-  "I promise to respect and understand you 💖",
-  "I promise to love you more every day ❤️"
+"I promise to always make you smile 😊",
+"I promise to support your dreams 🌟",
+"I promise to listen when you need me 🎧",
+"I promise to stand by you no matter what 🤝",
+"I promise to respect and understand you 💕",
+"I promise to love you more every day ❤️"
 ];
 
 const container=document.getElementById("container");
+const popup=document.getElementById("popup");
+const promiseText=document.getElementById("promiseText");
+const fill=document.getElementById("fill");
 const finalPromise=document.getElementById("finalPromise");
+const foreverBtn=document.getElementById("foreverBtn");
 
-let opened=0;
-
-promises.sort(()=>Math.random()-0.5);
+let currentCard=null;
+let completed=0;
 
 promises.forEach(text=>{
   const card=document.createElement("div");
   card.className="card";
-  card.textContent="🤞 Promise";
+  card.textContent="🤞 Open Promise";
 
   card.onclick=()=>{
-    if(card.classList.contains("open")) return;
-    card.classList.add("open");
-    showMessage(text);
-    floatHearts();
-    opened++;
-    if(opened===promises.length) finalPromise.classList.add("show");
+    if(card.classList.contains("done")) return;
+    currentCard=card;
+    promiseText.textContent=text;
+    popup.classList.add("show");
   };
 
   container.appendChild(card);
 });
 
-function showMessage(text){
-  const msg=document.createElement("div");
-  msg.className="promise-msg";
-  msg.textContent=text;
-  document.body.appendChild(msg);
-  setTimeout(()=>msg.remove(),2200);
+function acceptPromise(){
+  popup.classList.remove("show");
+  currentCard.classList.add("done");
+  completed++;
+  updateProgress();
+  stampSeal();
+
+  document.body.classList.add("heartbeat");
+  setTimeout(()=>document.body.classList.remove("heartbeat"),600);
+
+  if(completed===promises.length){
+    fill.classList.add("full");
+    setTimeout(()=>{
+      finalPromise.classList.add("show");
+      foreverBtn.style.display="inline-block";
+    },600);
+  }
 }
 
-function floatHearts(){
+function updateProgress(){
+  fill.style.width=(completed/promises.length)*100+"%";
+}
+
+function stampSeal(){
+  const seal=document.createElement("div");
+  seal.className="seal";
+  seal.innerHTML="💖";
+  seal.style.left=Math.random()*80+"%";
+  seal.style.top=Math.random()*80+"%";
+  document.body.appendChild(seal);
+
   for(let i=0;i<6;i++){
-    const h=document.createElement("div");
-    h.className="float";
-    h.innerHTML="💖";
-    h.style.left=Math.random()*100+"vw";
-    h.style.top=Math.random()*100+"vh";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),2000);
+    const s=document.createElement("div");
+    s.className="sparkle";
+    s.innerHTML="✨";
+    s.style.left=seal.style.left;
+    s.style.top=seal.style.top;
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),800);
   }
+
+  setTimeout(()=>seal.remove(),1000);
+}
+
+foreverBtn.onclick = () => {
+  alert("Forever sealed with love 💍💖");
 }
 </script>
 
