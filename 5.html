@@ -60,7 +60,7 @@ h1{
 
 .card:hover{ transform:scale(1.05); }
 
-/* Popup Scroll */
+/* Popup */
 .popup{
   position:fixed;
   inset:0;
@@ -153,20 +153,7 @@ h1{
 
 .final.show{ opacity:1; }
 
-#foreverBtn{
-  display:none;
-  margin-top:15px;
-  padding:10px 20px;
-  border:none;
-  border-radius:25px;
-  background:#ff4d6d;
-  color:white;
-  cursor:pointer;
-  position:relative;
-  z-index:2;
-}
-
-/* 🌸 Bottom Animation Area */
+/* 🌸 Bottom Animation */
 .bottom-anim {
   position: fixed;
   bottom: 0;
@@ -207,8 +194,6 @@ h1{
   My forever promise… I will always choose you, stand by you, and love you endlessly ❤️
 </div>
 
-<button id="foreverBtn">Seal Our Forever 💖</button>
-
 <div class="popup" id="popup">
   <div class="scroll">
     <div id="promiseText"></div>
@@ -216,7 +201,11 @@ h1{
   </div>
 </div>
 
-<!-- 🌸 Bottom Romantic Animation -->
+<!-- 🎵 Music -->
+<audio id="bgMusic" loop>
+  <source src="promise-music.mp3" type="audio/mpeg">
+</audio>
+
 <div class="bottom-anim"></div>
 
 <script>
@@ -234,10 +223,11 @@ const popup=document.getElementById("popup");
 const promiseText=document.getElementById("promiseText");
 const fill=document.getElementById("fill");
 const finalPromise=document.getElementById("finalPromise");
-const foreverBtn=document.getElementById("foreverBtn");
+const music=document.getElementById("bgMusic");
 
 let currentCard=null;
 let completed=0;
+let musicStarted=false;
 
 promises.forEach(text=>{
   const card=document.createElement("div");
@@ -264,12 +254,14 @@ function acceptPromise(){
   document.body.classList.add("heartbeat");
   setTimeout(()=>document.body.classList.remove("heartbeat"),600);
 
+  if(!musicStarted){
+    music.play();
+    musicStarted=true;
+  }
+
   if(completed===promises.length){
     fill.classList.add("full");
-    setTimeout(()=>{
-      finalPromise.classList.add("show");
-      foreverBtn.style.display="inline-block";
-    },600);
+    setTimeout(()=>finalPromise.classList.add("show"),600);
   }
 }
 
@@ -298,23 +290,16 @@ function stampSeal(){
   setTimeout(()=>seal.remove(),1000);
 }
 
-foreverBtn.onclick = () => {
-  window.location.href = "forever.html";
-}
-
-/* 🌸 Bottom floating hearts animation */
-const bottomAnim = document.querySelector(".bottom-anim");
-
-setInterval(() => {
-  const heart = document.createElement("div");
-  heart.className = "bottom-heart";
-  heart.innerHTML = Math.random() > 0.5 ? "💖" : "✨";
-  heart.style.left = Math.random() * 100 + "%";
-  heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+const bottomAnim=document.querySelector(".bottom-anim");
+setInterval(()=>{
+  const heart=document.createElement("div");
+  heart.className="bottom-heart";
+  heart.innerHTML=Math.random()>0.5?"💖":"✨";
+  heart.style.left=Math.random()*100+"%";
+  heart.style.animationDuration=(4+Math.random()*3)+"s";
   bottomAnim.appendChild(heart);
-
-  setTimeout(() => heart.remove(), 7000);
-}, 600);
+  setTimeout(()=>heart.remove(),7000);
+},600);
 </script>
 
 </body>
