@@ -15,31 +15,7 @@ body{
   color:white;
   text-align:center;
   overflow-x:hidden;
-  .bottom-anim {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 35vh; /* Only bottom area */
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.bottom-heart {
-  position: absolute;
-  bottom: -20px;
-  font-size: 18px;
-  opacity: 0.6;
-  animation: floatUp linear forwards;
-}
-
-@keyframes floatUp {
-  to {
-    transform: translateY(-40vh);
-    opacity: 0;
-  }
-}
+  position:relative;
 }
 
 /* 💓 Heartbeat */
@@ -69,6 +45,8 @@ h1{
   gap:18px;
   justify-content:center;
   margin-top:25px;
+  position:relative;
+  z-index:2;
 }
 
 .card{
@@ -93,6 +71,7 @@ h1{
   opacity:0;
   pointer-events:none;
   transition:opacity 0.5s ease;
+  z-index:5;
 }
 
 .popup.show{ opacity:1; pointer-events:auto; }
@@ -122,6 +101,7 @@ h1{
   position:absolute;
   font-size:60px;
   animation:stamp 0.6s ease forwards;
+  z-index:3;
 }
 @keyframes stamp{
   0%{transform:scale(2);opacity:0;}
@@ -133,6 +113,7 @@ h1{
   position:absolute;
   font-size:14px;
   animation:spark 0.8s ease forwards;
+  z-index:3;
 }
 @keyframes spark {
   to { transform:translateY(-40px); opacity:0; }
@@ -146,6 +127,8 @@ h1{
   margin:20px auto;
   border-radius:12px;
   overflow:hidden;
+  position:relative;
+  z-index:2;
 }
 
 .fill{
@@ -164,6 +147,8 @@ h1{
   opacity:0;
   transition:opacity 1s ease;
   text-shadow:0 0 10px rgba(255,105,180,0.7);
+  position:relative;
+  z-index:2;
 }
 
 .final.show{ opacity:1; }
@@ -177,6 +162,35 @@ h1{
   background:#ff4d6d;
   color:white;
   cursor:pointer;
+  position:relative;
+  z-index:2;
+}
+
+/* 🌸 Bottom Animation Area */
+.bottom-anim {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 35vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index:1;
+}
+
+.bottom-heart {
+  position: absolute;
+  bottom: -20px;
+  font-size: 18px;
+  opacity: 0.6;
+  animation: floatUp linear forwards;
+}
+
+@keyframes floatUp {
+  to {
+    transform: translateY(-40vh);
+    opacity: 0;
+  }
 }
 </style>
 </head>
@@ -202,10 +216,8 @@ h1{
   </div>
 </div>
 
-<!-- 🎵 Optional music -->
-<audio id="bgMusic" loop autoplay>
-  <source src="promise-music.mp3" type="audio/mpeg">
-</audio>
+<!-- 🌸 Bottom Romantic Animation -->
+<div class="bottom-anim"></div>
 
 <script>
 const promises=[
@@ -287,9 +299,10 @@ function stampSeal(){
 }
 
 foreverBtn.onclick = () => {
-  alert("Forever sealed with love 💍💖");
+  window.location.href = "forever.html";
 }
-  // Floating hearts only in bottom section
+
+/* 🌸 Bottom floating hearts animation */
 const bottomAnim = document.querySelector(".bottom-anim");
 
 setInterval(() => {
@@ -303,6 +316,6 @@ setInterval(() => {
   setTimeout(() => heart.remove(), 7000);
 }, 600);
 </script>
-<div class="bottom-anim"></div>
+
 </body>
 </html>
