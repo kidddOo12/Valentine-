@@ -15,6 +15,31 @@ body{
   color:white;
   text-align:center;
   overflow-x:hidden;
+  .bottom-anim {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 35vh; /* Only bottom area */
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bottom-heart {
+  position: absolute;
+  bottom: -20px;
+  font-size: 18px;
+  opacity: 0.6;
+  animation: floatUp linear forwards;
+}
+
+@keyframes floatUp {
+  to {
+    transform: translateY(-40vh);
+    opacity: 0;
+  }
+}
 }
 
 /* 💓 Heartbeat */
@@ -264,7 +289,20 @@ function stampSeal(){
 foreverBtn.onclick = () => {
   alert("Forever sealed with love 💍💖");
 }
-</script>
+  // Floating hearts only in bottom section
+const bottomAnim = document.querySelector(".bottom-anim");
 
+setInterval(() => {
+  const heart = document.createElement("div");
+  heart.className = "bottom-heart";
+  heart.innerHTML = Math.random() > 0.5 ? "💖" : "✨";
+  heart.style.left = Math.random() * 100 + "%";
+  heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+  bottomAnim.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 7000);
+}, 600);
+</script>
+<div class="bottom-anim"></div>
 </body>
 </html>
