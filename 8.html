@@ -19,41 +19,35 @@ body{
 }
 
 h1{
-  margin-top:18vh;
+  margin-top:15vh;
   font-family:'Playfair Display',serif;
-  font-size:30px;
+  font-size:28px;
 }
 
-.buttons{
+.options{
   margin-top:30px;
-  position:relative;
 }
 
 button{
   padding:12px 22px;
-  font-size:18px;
+  margin:10px;
+  font-size:16px;
   border:none;
   border-radius:30px;
   cursor:pointer;
-  margin:10px;
+  background:linear-gradient(45deg,#ff4d6d,#ff85a2);
+  color:white;
   transition:0.3s;
 }
 
-.yes{
-  background:linear-gradient(45deg,#ff4d6d,#ff85a2);
-  color:white;
+button:hover{
+  transform:scale(1.05);
 }
 
-.maybe{
-  background:#444;
-  color:white;
-  position:absolute;
-}
-
-/* Kiss Animation */
+/* Kiss animation */
 .kiss{
-  font-size:80px;
-  margin-top:30px;
+  font-size:90px;
+  margin-top:20px;
   opacity:0;
   transform:scale(0);
   transition:all 0.6s ease;
@@ -65,20 +59,25 @@ button{
 }
 
 .message{
-  margin-top:20px;
+  margin-top:15px;
   font-size:18px;
   opacity:0;
-  transition:opacity 1.2s ease;
+  transition:opacity 1s ease;
 }
 
 .message.show{
   opacity:1;
 }
 
+.final-btn{
+  display:none;
+  margin-top:20px;
+}
+
 /* Floating hearts */
 .heart{
   position:absolute;
-  font-size:22px;
+  font-size:20px;
   animation:floatUp 2s ease forwards;
 }
 
@@ -86,44 +85,70 @@ button{
   0%{opacity:1; transform:translateY(0);}
   100%{opacity:0; transform:translateY(-120px);}
 }
+
+/* Screen blush */
+.blush{
+  animation:blushEffect 1s ease;
+}
+
+@keyframes blushEffect{
+  0%{background:radial-gradient(circle at top,#2a0a16,#12040c 80%);}
+  50%{background:radial-gradient(circle at top,#4b0f1f,#12040c 80%);}
+  100%{background:radial-gradient(circle at top,#2a0a16,#12040c 80%);}
+}
 </style>
 </head>
 <body>
 
-<h1>Karishma… can I steal a kiss today? 💋</h1>
+<h1>How should I kiss you today, Karishma? 💋</h1>
 
-<div class="buttons">
-  <button class="yes" onclick="sendKiss()">Yes 💖</button>
-  <button class="maybe" id="maybeBtn">Maybe 🙈</button>
+<div class="options">
+  <button onclick="kissType('forehead')">Forehead 💋</button>
+  <button onclick="kissType('cheek')">Cheek 😘</button>
+  <button onclick="kissType('romantic')">Soft Romantic ❤️</button>
 </div>
 
-<div class="kiss" id="kiss">💋</div>
+<div class="kiss" id="kissEmoji">💋</div>
+<div class="message" id="kissMsg"></div>
+<button class="final-btn" id="returnBtn" onclick="sendBack()">Send a Kiss Back 😌</button>
 
-<div class="message" id="finalMsg">
-  Happy Kiss Day, Karishma 💖<br>
-  If I could, I’d kiss your forehead and tell you how lucky I am to have you.
-</div>
+<audio id="kissMusic" loop>
+  <source src="kiss-music.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-const maybeBtn=document.getElementById("maybeBtn");
+const emoji=document.getElementById("kissEmoji");
+const msg=document.getElementById("kissMsg");
+const returnBtn=document.getElementById("returnBtn");
+const music=document.getElementById("kissMusic");
 
-maybeBtn.addEventListener("mouseover", moveBtn);
-maybeBtn.addEventListener("touchstart", moveBtn);
+let musicStarted=false;
 
-function moveBtn(){
-  const x=Math.random()*(window.innerWidth-120);
-  const y=Math.random()*(window.innerHeight-120);
-  maybeBtn.style.left=x+"px";
-  maybeBtn.style.top=y+"px";
-}
+function kissType(type){
 
-function sendKiss(){
-  document.body.style.background="radial-gradient(circle at top,#4b0f1f,#12040c 80%)";
+  document.body.classList.add("blush");
+  setTimeout(()=>document.body.classList.remove("blush"),1000);
 
-  document.getElementById("kiss").classList.add("show");
-  document.getElementById("finalMsg").classList.add("show");
+  emoji.classList.add("show");
+  msg.classList.add("show");
+  returnBtn.style.display="inline-block";
 
-  for(let i=0;i<20;i++){
+  if(!musicStarted){
+    music.play();
+    musicStarted=true;
+  }
+
+  if(type==='forehead'){
+    msg.innerHTML="A soft forehead kiss for you, Karishma 💖<br>To remind you that you’re safe and loved.";
+  }
+  if(type==='cheek'){
+    msg.innerHTML="A cute cheek kiss 😘<br>Because you make my heart smile, Karishma.";
+  }
+  if(type==='romantic'){
+    msg.innerHTML="A slow romantic kiss ❤️<br>Because I never want this feeling to end, Karishma.";
+  }
+
+  for(let i=0;i<25;i++){
     const heart=document.createElement("div");
     heart.className="heart";
     heart.innerHTML="💖";
@@ -132,6 +157,10 @@ function sendKiss(){
     document.body.appendChild(heart);
     setTimeout(()=>heart.remove(),2000);
   }
+}
+
+function sendBack(){
+  alert("Waiting for my kiss back, Karishma 😌💋");
 }
 </script>
 
